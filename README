@@ -1,0 +1,29 @@
+USAGE:
+------
+    getiainfo.pl [-vh] [-s server_list] [-p package_list] [-c "Customer Name"]
+        -v: prints verbose debugging messages
+        -h: prints this messages and exits
+        -s: directs file to use as list of server (defaults to ./server_list)
+        -p: directs file to use as list of packages (defaults to ./package_list)
+        -c: set the customer name for file naming.  Will prompt if not entered.
+
+
+INSTRUCTIONS:
+-------------
+1) Put PERL script, 'Spreadsheet', and 'package_list' directory on one of the systems.
+
+2) Update package_list as needed for current IA version
+	- You can use a different file name and use the '-p' option noted above
+
+3) Create a file named 'server_list' with the list of servers to query:
+	- Comments are allow via lines starting with '#'
+	- Blank lines are ignored
+	- You can use a different file name and use the '-s' option noted above
+
+4) Run 'perl getiainfo.pl'
+
+5) Enter customer name when prompted.
+	- This can also be done via the '-c' command line option
+
+6) Resulting file on package info will be '<customer>-pkginfo-<date/time>.xls'
+

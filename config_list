@@ -1,0 +1,46 @@
+# ARCHIVE system
+/IA/ARCHIVE/config/system/arAIS.conf
+/IA/ARCHIVE/config/system/archive.conf
+/IA/ARCHIVE/config/system/arDB.conf
+/IA/ARCHIVE/config/system/arEOR.conf
+/IA/ARCHIVE/config/system/arGlobal.conf
+/IA/ARCHIVE/config/system/arInput.conf
+/IA/ARCHIVE/config/system/arMagRetention.conf
+/IA/ARCHIVE/config/system/arNetwork.conf
+/IA/ARCHIVE/config/system/arPath.conf
+/IA/ARCHIVE/config/system/arProcessLyt.conf
+/IA/ARCHIVE/config/system/arWorkflow.conf
+/IA/ARCHIVE/config/system/arsuper.conf
+/IA/ARCHIVE/config/system/blockArchive.conf
+/IA/ARCHIVE/config/system/centera.conf
+/IA/ARCHIVE/config/system/cfilter1.conf
+/IA/ARCHIVE/config/system/dbMap.conf
+/IA/ARCHIVE/config/system/dispCode.conf
+/IA/ARCHIVE/config/system/holidays.dat
+/IA/ARCHIVE/config/system/iaparamd.conf
+/IA/ARCHIVE/config/system/logViewer.conf
+/IA/ARCHIVE/config/system/lqs.conf
+/IA/ARCHIVE/config/system/masterd.conf
+/IA/ARCHIVE/config/system/path.conf
+/IA/ARCHIVE/config/system/raidrecovery.conf
+/IA/ARCHIVE/config/system/retrieval.conf
+/IA/ARCHIVE/config/system/stat.conf
+/IA/ARCHIVE/config/system/submitws.conf
+/IA/ARCHIVE/config/system/taperecovery.conf
+/IA/ARCHIVE/config/system/updatews.conf
+/IA/ARCHIVE/config/system/viewpointe.conf
+
+# ARCHIVE Site
+/IA/ARCHIVE/config/site/userExits.conf
+
+# ARCHIVE config
+/IA/ARCHIVE/config/arUpdate.conf
+/IA/ARCHIVE/config/arUtils.conf
+/IA/ARCHIVE/config/qmgr.conf
+/IA/ARCHIVE/config/system.conf
+
+# MEDIAD
+/IA/MEDIAD/config/inputd.conf
+/IA/MEDIAD/config/mediad.conf
+/IA/MEDIAD/config/outputd.conf
+/IA/MEDIAD/config/passthrough.conf
