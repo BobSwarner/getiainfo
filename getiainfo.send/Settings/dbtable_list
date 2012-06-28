@@ -1,0 +1,21 @@
+# list of db tables to be reported
+# format: dbtype:table_name:order_by_fields
+# where dbtype is masterdb or confdb (independent of actual sid names)
+#       table_name is the name of the table to query
+#       order_by_fields is the field(s) to sort - They should be comma seperated in sorting order
+# all are required
+# all are case insensitive
+
+confdb:IAD_CONFIG_DATA:group_name,config_name
+confdb:OBJECTFIELD:obj_id,obj_version,field_seq
+confdb:OBJECTTYPE:obj_id,obj_version
+confdb:SERVICE:service
+confdb:APPLICATION:appl
+confdb:CLIENT:client_id
+confdb:DOMAIN:domain
+
+masterdb:APP_CODE:appcodestart
+masterdb:DISP_CODE:dispcode
+masterdb:CENTERA_DEVICES:device_id
+masterdb:CENTERA_INFO:dispcode
+
