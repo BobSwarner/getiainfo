@@ -9,6 +9,7 @@
 
 use strict;
 use warnings;
+use Net::Ping;
 
 use lib "./Packages";
 
@@ -42,16 +43,22 @@ $Modes{'dbtables'} = {
 sub TestConnections() {
 	my $error = 0;
 	
+	my $p = Net::Ping->new();
 	foreach my $server (keys %{$Settings{SERVERS}}) {
-		my $connect_as = ConnectAs($server);
-		Debug "Testing $server";
-		my $cmd = "ssh -o StrictHostKeyChecking=yes -o PasswordAuthentication=no $connect_as uname -n";
-		my ($ret,@output) = RunLocalCommand( $cmd );
-		if ($ret != 0) {
-			Info "ERROR: Cannot connect to $server";
-			$error = 1;
+		if ($p->ping($server)) {
+			my $connect_as = ConnectAs($server);
+			Debug "Testing $server";
+			my $cmd = "ssh -o StrictHostKeyChecking=yes -o PasswordAuthentication=no $connect_as uname -n";
+			my ($ret,@output) = RunLocalCommand( $cmd );
+			if ($ret != 0) {
+				Info "ERROR: Cannot ssh to $server";
+				$error = 1;
+			} else {
+				Info "Connection to $server is ok.";
+			}
 		} else {
-			Info "Connection to $server is ok.";
+			Info "ERROR: System $server does not respond to a ping";
+			$error = 1;			
 		}
 	}
 	return $error;
