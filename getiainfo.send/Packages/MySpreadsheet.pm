@@ -97,6 +97,28 @@ sub ProcessUniques($) {
 	}
 }
 
+#---- SortRowHeaders ------------------------------------------------------
+
+sub SortRowHeaders {
+	my ($head1,$digit1,$head2,$digit2);
+	
+	print "Sorting $a vs $b\n";
+	if ($a =~ /^(.+?)(\d+)$/) {
+		$head1 = $1;
+		$digit1 = $2;
+		if ($b =~ /^(.+?)(\d+)$/) {
+			$head2 = $1;
+			$digit2 = $2;
+			print "comparing $head1 -- $digit1 <--> $head2 -- $digit2\n";
+			if ($head1 eq $head2) {
+				print "COMPARING DIGITS\n";
+				return($digit1 <=> $digit2);
+			}
+		}
+	}
+	return ($a cmp $b);
+}
+
 #---- ProcessIndexes --------------------------------------
 
 # for each sheet, create a sort list of columns and rows used in the sheet
@@ -124,7 +146,7 @@ sub ProcessIndexes($) {
 		}
 
 		$count = 0;
-		foreach $row (sort keys %rowhash) {
+		foreach $row (sort SortRowHeaders keys %rowhash) {
 			$rowindex{$row} = $count++;
 		}
 				
@@ -254,7 +276,7 @@ sub WriteXLS($) {
 	ProcessIndexes($dataref) if ($configref->{ProcessIndexes});
 		
 	foreach my $sheet (sort keys %{$dataref}) {
-    	WriteSheet( $workbook, $sheet, \%{$dataref->{$sheet}}, \%formats, $configref );
+		WriteSheet( $workbook, $sheet, \%{$dataref->{$sheet}}, \%formats, $configref );
 	}
 }
 

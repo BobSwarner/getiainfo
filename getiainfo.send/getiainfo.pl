@@ -93,7 +93,7 @@ Usage: getiainfo.pl [-vhC] [-s site-settings] [-p packages] [-c configs] [-t dbt
 	-p: sets the file to use as list of packages (defaults to $Settings{PACKAGES}{FILE})	
 	-t: sets the file to use as list of DB tables (defaults to $Settings{DBTABLES}{FILE})	
 	-c: sets the file to use as list of config files (defaults to $Settings{CONFIGS}{FILE})	
-        -C: tests ability to connect to each server in the server list and the exists
+        -C: tests ability to connect to each server in the server list and exits
 	-n: set the site name for file naming.  Will prompt if not entered or in the settings file.
 	-m: running mode.  Available modes are:
 $MODES
@@ -182,5 +182,5 @@ foreach my $mode (sort keys %Modes) {
 		WriteXLS(\%datahash);
 	}
 }
-print Dumper(\%Settings);
+#print Dumper(\%Settings);
 Info "Finished";

@@ -144,8 +144,8 @@ sub RunCommand( $ $ ) {
 	if ($local) {
 		$fullcmd = "$cmd";
 	} else {
-		my $connectas = ($main::SSHUser{$server} ? "$main::SSHUser{$server}\@$server" : $server ); # use username to connect as if it was provided
-		$fullcmd = "ssh -o StrictHostKeyChecking=no $connectas $cmd";
+		my $connect_as = ConnectAs($server);
+		$fullcmd = "ssh -o StrictHostKeyChecking=no -o PasswordAuthentication=no $connect_as $cmd";
 	}
 
 	($ret,@output) = RunLocalCommand( $fullcmd );

@@ -13,6 +13,7 @@ use CommonUtils;
 
 use Data::Dumper;
 use Storable qw(store retrieve);
+use File::Basename;
 
 our (%CONFIG);
 
@@ -156,8 +157,22 @@ sub AddDataColumn($$$) {
 
 sub GetFileFromServer($$$) {
 	my ($serverref,$server,$path) = @_;
-
-	my ($ret,@input) = RunCommand( $server, "cat $path" );
+	my ($ret,@input);
+	
+	if ($Settings{TESTING}) {
+		my $testfile = basename($path);
+		$testfile = "../test-data/confs/$testfile";
+		Debug "Opening test file $testfile";
+		if (open INFILE, "<$testfile") {
+			@input = <INFILE>;
+			$ret = 0;
+		} else {
+			Info "ERROR: Error opening test file $testfile";
+			$ret = 1;
+		}
+	} else {
+		($ret,@input) = RunCommand( $server, "cat $path" );
+	}
 	if ($ret == 0) {
 		foreach (@input) {
 			ProcessKeyPair(\%{$serverref->{DATA}},$_);
@@ -210,7 +225,7 @@ sub CollectLocalFileInformation() {
 			push(@pidlist, $pid);
 		} elsif ($pid == 0) {
 			# child
-		    ProcessServerConfigInfo( $server );
+			ProcessServerConfigInfo( $server );
 			exit(0);
 		} else {
 			die "couldn’t fork: $!\n";
