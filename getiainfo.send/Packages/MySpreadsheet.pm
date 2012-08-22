@@ -102,16 +102,13 @@ sub ProcessUniques($) {
 sub SortRowHeaders {
 	my ($head1,$digit1,$head2,$digit2);
 	
-	print "Sorting $a vs $b\n";
 	if ($a =~ /^(.+?)(\d+)$/) {
 		$head1 = $1;
 		$digit1 = $2;
 		if ($b =~ /^(.+?)(\d+)$/) {
 			$head2 = $1;
 			$digit2 = $2;
-			print "comparing $head1 -- $digit1 <--> $head2 -- $digit2\n";
 			if ($head1 eq $head2) {
-				print "COMPARING DIGITS\n";
 				return($digit1 <=> $digit2);
 			}
 		}

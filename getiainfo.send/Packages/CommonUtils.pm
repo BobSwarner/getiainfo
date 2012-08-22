@@ -145,7 +145,7 @@ sub RunCommand( $ $ ) {
 		$fullcmd = "$cmd";
 	} else {
 		my $connect_as = ConnectAs($server);
-		$fullcmd = "ssh -o StrictHostKeyChecking=no -o PasswordAuthentication=no $connect_as $cmd";
+		$fullcmd = "ssh -o StrictHostKeyChecking=no -o BatchMode=yes $connect_as $cmd";
 	}
 
 	($ret,@output) = RunLocalCommand( $fullcmd );

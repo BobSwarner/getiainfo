@@ -43,13 +43,13 @@ $Modes{'dbtables'} = {
 sub TestConnections() {
 	my $error = 0;
 	
-	my $p = Net::Ping->new();
+	my $p = Net::Ping->new('tcp',2);
+        $p->{'port_num'} = 22;
 	foreach my $server (keys %{$Settings{SERVERS}}) {
 		if ($p->ping($server)) {
 			my $connect_as = ConnectAs($server);
 			Debug "Testing $server";
-			my $cmd = "ssh -o StrictHostKeyChecking=yes -o PasswordAuthentication=no $connect_as uname -n";
-			my ($ret,@output) = RunLocalCommand( $cmd );
+			my ($ret,@output) = RunCommand( $server, 'uname -n' );
 			if ($ret != 0) {
 				Info "ERROR: Cannot ssh to $server";
 				$error = 1;
