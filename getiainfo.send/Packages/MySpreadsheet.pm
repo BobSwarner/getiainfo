@@ -97,7 +97,119 @@ sub ProcessUniques($) {
 	}
 }
 
+#---- ARPLProcessLine ------------------------------------------------
+
+# Read in lines from arProcessLyt.conf into a hiarchial hash
+
+sub ARPLProcessLine($$$);
+
+sub ARPLProcessLine($$$) {
+    my ($hashref,$key,$data) = @_;
+    
+    if ($key =~ /^(\S+?)\*(\S+)$/) {
+        ARPLProcessLine(\%{$hashref->{$1}},$2,$data);
+    } else {
+        if ($key =~ /^(\D+)(\d+)$/) {
+            my $type = $1;
+            my $num = $2 - 1;
+            @{$hashref->{$type}}[$num] = $data;
+        } else {
+            $hashref->{$key} = $data;
+        }
+    }
+}
+
+#---- ARPLGetNextDataValue --------------------------------------------------
+
+sub ARPLGetNextDataValue($);
+
+sub ARPLGetNextDataValue($) {
+    my ($data) = @_;
+    my (@output);
+   
+    if (ref($data) eq "ARRAY") {
+        foreach my $val (@{$data}) {
+            push @output, $val;
+        }
+    } elsif (ref($data) eq "HASH") {
+        foreach my $key (sort keys %{$data}) {
+            push @output, ARPLGetNextDataValue($data->{$key});
+        }        
+    } else {
+        push @output, $data;
+    }
+    return @output;
+}
+
+#---- ARPLsort -----------------------------------------------
+
+sub ARPLsort(@) {
+    my (%list,@output);
+
+    # first, break up ARPL keys into heiarchial list
+    for (@_) {    
+        ARPLProcessLine(\%list,$_,$_);
+    }
+ 
+    # now, process different ARPL sections in sorted order
+    foreach my $section (sort keys %list) {
+        my (%printed,@keyorder);
+        
+        # figure out which type this ARPL section is - this helps determine how to order that section for readability
+        my $is_app = 0; # used print to hostname and startup flags together
+        if (defined $list{$section}{NumberGroups}) {
+            # This is a group list
+            @keyorder = qw/NumberGroups Group/;
+        } elsif ($section =~ /^\S+Group$/) {
+            # This is a group
+            @keyorder = qw/NumberProcesses AppName/;
+        } elsif (defined $list{$section}{ExecutableName}) {
+            # This is an application
+            @keyorder = qw/AppName ExecutableName ExecutableDir WorkDir LogDir NumberProcesses/;
+            $is_app = 1;
+        } else {
+            # Everything else...
+            @keyorder = qw/NumberServers NumberProcesses Hostname/;
+        }
+        
+        # first try the special key sort list based on the section type
+	# keep track of which sub-keys have been printed for this section
+        foreach my $subkey (@keyorder) {
+            if (defined $list{$section}{$subkey}){
+                push @output, ARPLGetNextDataValue($list{$section}{$subkey});
+                $printed{$subkey} = 1;
+            }
+        }
+        
+        # if this section in an application (which should have Hostnames and StartupFlags and they should be
+        # equal length arrays), print them together
+        if ($is_app and defined($list{$section}{Hostname}) and defined($list{$section}{StartupFlags})) {
+            my $num = @{$list{$section}{Hostname}};
+            for (my $count=0; $count<$num; $count++) {
+                push @output, ARPLGetNextDataValue($list{$section}{Hostname}[$count]);
+                push @output, ARPLGetNextDataValue($list{$section}{StartupFlags}[$count]);
+            }
+            $printed{Hostname} = 1;
+            $printed{StartupFlags} = 1;
+        }
+            
+        # now, process any unprinted sub-keys in alphabetic order
+        foreach my $subkey (sort keys %{$list{$section}}) {
+            if (!$printed{$subkey}){
+                push @output, ARPLGetNextDataValue($list{$section}{$subkey});
+            }
+        }
+    }
+
+    # return the list of ARPL row header values in desired order
+    return @output;
+}
+
 #---- SortRowHeaders ------------------------------------------------------
+
+# this sort routine finds lines which match except for trailing digits and makes sure
+# the trailing digits are in numberical order.  Otherwise, it just returns are regular
+# comparison of the lines
 
 sub SortRowHeaders {
 	my ($head1,$digit1,$head2,$digit2);
@@ -143,8 +255,15 @@ sub ProcessIndexes($) {
 		}
 
 		$count = 0;
-		foreach $row (sort SortRowHeaders keys %rowhash) {
-			$rowindex{$row} = $count++;
+		# Use special sorting for arProcessLyt.conf sheet
+		if ($sheet eq "arProcessLyt.conf") {
+			foreach $row (ARPLsort(keys %rowhash)) {
+				$rowindex{$row} = $count++;
+			}			
+		} else {
+			foreach $row (sort SortRowHeaders keys %rowhash) {
+				$rowindex{$row} = $count++;
+			}
 		}
 				
 		# now we have the row index, go through and put it in the sheet hash

@@ -96,17 +96,18 @@ sub WriteTestData() {
 sub SetDBInfo() {
 	$DBUSER = $Settings{DBUSER};
 	$DBPWD = $Settings{DBPWD};
-	
+	my $dbname = $DBINFO{CONFDB}{SID} = $Settings{CONFDBSID};
+
 	if ((!defined $DBPWD) || ($DBPWD eq "")) {
 		$| = 1; #auto flush STDOUT
 		system("stty -echo"); # Turn off echo
-		print "Enter password for oracle user '$DBUSER':";
+		print "Enter password for oracle user '$DBUSER' on SID '$dbname':";
 		chop($DBPWD=<STDIN>);
 	        print "\n";
 		system("stty echo"); # Turn on echo
 	}
 
-	my $dbname = $DBINFO{CONFDB}{SID} = $Settings{CONFDBSID};
+	
 	my $dbh;
 
 	return if ($Settings{TESTING});

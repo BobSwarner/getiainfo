@@ -1,7 +1,13 @@
-# Create Jan 2012 based on IA 5.1 package list
+# Created August 2012 based on IA 5.1 package list
 
+NCRrman
+NCRshm
+NCRshmiad
+NCRshmiaw
+NCRshmw
 aisba
 aisbrs
+aisdp
 aisinq
 aismdwbtl
 aismgr
@@ -13,6 +19,7 @@ csaxis
 cscert
 csdb
 csws
+dpserver
 iadabase
 iadaconf
 iadcent
@@ -21,12 +28,14 @@ iaddr
 iadenv
 iadeordb
 iadhash
+iadis
 iadmastdb
 iadraid
 iadsuppt
 iadtiffix
 iadwebmin
 iaeorbase
+iissm
 iissmtcat
 mdbase
 mdcffile
@@ -66,7 +75,11 @@ wvacs
 wvacsget
 wvasig
 wvcore
+wvdp
 wvframe
 wvimgplg
 wvimgreq
 wvinq
+wvncomp
+wvncsat
+
