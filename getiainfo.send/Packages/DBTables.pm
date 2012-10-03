@@ -18,7 +18,7 @@ use Data::Dumper;
 
 our %DBINFO = ();
 our %TABLEDATA = ();
-our ($DBUSER,$DBPWD,$DR_DC_OFFSET);
+our ($DBUSER,$DBPWD,$DR_DC_OFFSET,$HAS_DR);
 	
 #---- ReadTable  ------------------------------------------------------------------
 
@@ -145,11 +145,13 @@ sub SetDBInfo() {
     	$sth->bind_columns( \$value );
     	if ($sth->fetch) {
 		$DR_DC_OFFSET = $value;
+		Debug "DR DISPCODE OFFSET set to $DR_DC_OFFSET";
+		$HAS_DR = 1;
 	} else {
-		die "Error retrieving DR_DC_OFFSET";
+		Info "Error retrieving DR_DC_OFFSET - Assuming no DR is configured.";
+		$HAS_DR = 0;
 	}
 	$sth->finish();
-	Debug "DR DISPCODE OFFSET set to $DR_DC_OFFSET";
 	
 	$dbh->disconnect();
 }
@@ -226,7 +228,7 @@ sub AddDispTable($$) {
 	foreach my $row (@{$TABLEDATA{$table}{DATA}}) {
 		my $index = @{$row}[$disp_col];
 		my $type = "PRIM";
-		if ($index > $DR_DC_OFFSET) {
+		if ($HAS_DR && ($index > $DR_DC_OFFSET)) {
 			$index = $index - $DR_DC_OFFSET;
 			$type = "DR";
 		}
@@ -327,6 +329,7 @@ sub CollectData($) {
 		# Read in test data
 		ReadTestData();
 		$DR_DC_OFFSET = 5000;
+		$HAS_DR = 1;
 	} else {
 
 		foreach my $dbtype (keys %DBINFO) {
